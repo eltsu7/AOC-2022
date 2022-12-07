@@ -3,29 +3,17 @@ namespace AOC
     class Node
     {
         private List<int> _size;
-        private string _name;
         private int _size_limit;
-        public List<Node> children = new List<Node>();
+        public string name;
+        public List<Node> children;
         public Node? parent;
+        
         public Node (string name, int size_limit)
         {
-            _name = name;
-            _size = new List<int>();
-            _size_limit = size_limit;
-        }
-        public void add_child(Node child)
-        {
-            children.Add(child);
-        }
-
-        public void set_parent(Node new_parent)
-        {
-            parent = new_parent;
-        }
-
-        public string Name
-        {
-            get { return _name; }
+            this.name = name;
+            this.children = new List<Node>();
+            this._size = new List<int>();
+            this._size_limit = size_limit;
         }
 
         public List<int> Size
@@ -43,13 +31,14 @@ namespace AOC
                     {
                         list.AddRange(child.Size);
                     }
+                    if (list.Sum() < _size_limit)
+                    {
+                        Console.WriteLine(list.Sum());
+                    }
                     return list;
                 }
             }
-            set
-            {
-                _size = value;
-            }
+            set { _size = value; }
         }
     }
 }
