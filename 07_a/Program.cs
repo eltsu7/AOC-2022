@@ -9,8 +9,8 @@ Node current_node = root_node;
 
 void add_child(Node parent, Node child)
 {
-    parent.add_child(child);
-    child.set_parent(parent);
+    parent.children.Add(child);
+    child.parent = parent;
 }
 
 foreach (string line in line_list)
@@ -23,18 +23,18 @@ foreach (string line in line_list)
     
     if (words[0] == "$" && words[1] == "cd")
     {
-        current_node = current_node.children.Find(c => c.Name == words[2]);
+        current_node = current_node.children.Find(c => c.name == words[2]);
     }   
     else if (words[0] == "dir")
     {
-        if (current_node.children.Find(c => c.Name == words[1]) == null)
+        if (current_node.children.Find(c => c.name == words[1]) == null)
         {
             add_child(current_node, new Node(words[1], size_limit));
         }
     }
     else
     {
-        if (current_node.children.Find(c => c.Name == words[1]) == null)
+        if (current_node.children.Find(c => c.name == words[1]) == null)
         {
             var child = new Node(words[1], size_limit);
             child.Size = new List<int>(){int.Parse(words[0])};
@@ -43,4 +43,4 @@ foreach (string line in line_list)
     }
 }
 
-Console.WriteLine($"Total: {root_node.Size.Sum()}");
+var size = root_node.Size.Sum();
