@@ -23,7 +23,7 @@
         }
     }
 
-    int run(string path)
+    void run(string path)
     {
         foreach (string line in System.IO.File.ReadLines(path))
         {
@@ -36,6 +36,5 @@
             incrementCycle();
             x += int.Parse(line.Substring(5));
         }
-        return 0;
     }
 }
