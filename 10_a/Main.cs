@@ -1,0 +1,1 @@
+new Program(new List<int>(){ 20, 60, 100, 140, 180, 220 }).run("C:/Users/eelih/Documents/Koodit/AOC-2022/10_a/input.txt");
