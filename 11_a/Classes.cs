@@ -27,25 +27,6 @@ class Monki
         int worry=(useOldValue?operation=='+'?old+old:old*old:operation=='+'?old+operationValue:old*operationValue)/3;
         return (worry, worry % testValue == 0 ? monkiFrends.Item1 : monkiFrends.Item2);
     }
-    public void Print()
-    {
-        Console.WriteLine(
-            $"""
-            operation={operation}
-            useOldValue={useOldValue}
-            operationValue={operationValue}
-            testValue={testValue}
-            monkiFrends1={monkiFrends.Item1}
-            monkiFrends2={monkiFrends.Item2}
-            inspections={inspections}
-            items={items.Count}: 
-            """
-        );
-        foreach (var item in items)
-        {
-            Console.Write($"{item}, ");
-        }
-    }
 }
 
 class Main
