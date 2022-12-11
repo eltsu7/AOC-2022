@@ -1,0 +1,1 @@
+new Main("input.txt");
