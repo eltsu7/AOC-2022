@@ -1,72 +1,71 @@
-﻿
-string text = System.IO.File.ReadAllText("input.txt");
+﻿string text = System.IO.File.ReadAllText("input.txt");
 List<string> lines = text.Split("\r\n").ToList();
 var lineLength = lines[0].Length + 2;
 var lineCount = lines.Count;
 var startIndex = text.IndexOf('S');
 var endIndex = text.IndexOf('E');
 
-List<List<char>> charMap = lines.ConvertAll(s => s.ToCharArray().ToList());
-List<List<int>> stepsMap;
-List<List<bool>> visitedMap;
-var visitedCoordinates = new List<(int, int)>();
-
 (int, int) startCoords = ((int) startIndex / lineLength, startIndex % lineLength);
 (int, int) endCoords = ((int) endIndex / lineLength, endIndex % lineLength);
 
-bool inBounds((int, int) coords) { return (0 <= coords.Item1 && coords.Item1 < lineLength - 2) && (0 <= coords.Item2 && coords.Item2 < lineLength - 2); }
-bool notVisited ((int, int) coords) { return !visitedCoordinates.Contains(coords); }
-bool canTravel((int, int) pointA, (int, int) pointB) { return (Math.Abs(charMap[pointA.Item1][pointA.Item2] - charMap[pointB.Item1][pointB.Item2]) < 2); }
+List<List<char>> charMap = lines.ConvertAll(s => s.ToCharArray().ToList());
+var visitedCoordinates = new List<(int, int)>();
 
-List<(int, int)> getNeighbors((int, int) coords)
+bool isInBounds((int, int) coords) { return (0 <= coords.Item1 && coords.Item1 < lineCount) && (0 <= coords.Item2 && coords.Item2 < lineLength - 2); }
+bool isNotVisited ((int, int) coords) { return !visitedCoordinates.Contains(coords); }
+bool canTravel(char a, char b) { return b - a < 2; }
+
+List<(int, int)> GetNeighbors((int, int) coords)
 {
     var x = coords.Item1;
     var y = coords.Item2;
+    var currentHeigh = coords == startCoords ? 'a': charMap[coords.Item1][coords.Item2];
     var validNeighbors = new List<(int, int)>();
-    foreach (var neighbor in new List<(int, int)>(){(x+1, y),(x, y-1),(x-1, y),(x, y+1)})
+    foreach (var neighborCoords in new List<(int, int)>(){(x+1, y),(x, y-1),(x-1, y),(x, y+1)})
     {
-        if (neighbor == endCoords)
+        if (isInBounds(neighborCoords) && isNotVisited(neighborCoords))
         {
-            Console.WriteLine("End found!");
-            System.Environment.Exit(0);
-        }
-        if (inBounds(neighbor) && notVisited(neighbor))
-        {
-            // Console.WriteLine((int)charMap[x][y]);
-            // Console.WriteLine((int)charMap[neighbor.Item1][neighbor.Item2]);
-            // Console.WriteLine((int)charMap[x][y] - charMap[neighbor.Item1][neighbor.Item2]);
-            if (canTravel(coords, neighbor) || charMap[x][y] == 'S')
+            char neighborHeight = neighborCoords == endCoords ? 'z' : charMap[neighborCoords.Item1][neighborCoords.Item2];
+            if (canTravel(currentHeigh, neighborHeight))
             {
-                validNeighbors.Add(neighbor);
+                validNeighbors.Add(neighborCoords);
             }
-            // else
-            // {
-            //     Console.WriteLine($"{x},{y}={charMap[x][y]} .. {neighbor.Item1},{neighbor.Item2}={charMap[neighbor.Item1][neighbor.Item2]}");
-            // }
         }
     }
     return validNeighbors;
 }
 
+void PrintVisitedCoords(List<(int, int)> visitedCoordinates)
+{
+    for (int i = 0; i < lineCount; i++)
+    {
+        for (int j = 0; j < lineLength - 2; j++)
+        {
+            Console.Write(visitedCoordinates.Contains((i,j)) ? "#" : charMap[i][j]);
+        }
+        Console.WriteLine();
+    }
+}
+
 var currentStep = new List<(int, int)>() {startCoords};
 var nextStep = new List<(int, int)>();
-for (int i = 0; i < 100; i++)
+for (int i = 0; i < 400; i++)
 {
-    // Console.WriteLine(i);
-    // foreach (var item in currentStep.Distinct())
-    // {
-    //     Console.WriteLine($"{item.Item1},{item.Item2} = {charMap[item.Item1][item.Item2]}");
-    // }
-    Console.WriteLine(currentStep.Count);
+    if (currentStep.Contains(endCoords))
+    {
+        Console.WriteLine($"End found at step: {i} !");
+        break;
+    }
+    // Console.WriteLine($"{i} = {currentStep.Count} " + new string(currentStep.ConvertAll(coord => charMap[coord.Item1][coord.Item2]).ToArray()));
     visitedCoordinates.AddRange(currentStep);
     visitedCoordinates = visitedCoordinates.Distinct().ToList();
     foreach (var coord in currentStep)
     {
-        nextStep.AddRange(getNeighbors(coord));
+        nextStep.AddRange(GetNeighbors(coord));
     }
     nextStep = nextStep.Distinct().ToList();
     currentStep = new List<(int, int)>(nextStep);
     nextStep.Clear();
 }
 
-// abaacccccccccccccaaaaaaaccccccccccccccccccccccccccccccccccaaaaaa
+// PrintVisitedCoords(visitedCoordinates);
