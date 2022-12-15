@@ -26,7 +26,7 @@
     }
 }
 
-partial class Program
+class Program
 {
     const string filename = "input.txt";
     List<Coordinate> wallCoords = new List<Coordinate>();
